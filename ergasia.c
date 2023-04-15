@@ -14,8 +14,9 @@ typedef struct{
     char country[50];
 }team;
 
-int lc(FILE* ptr); //orismos synartisis line counter
-
+int lc(FILE* ptr); //orisma synartisis line counter
+int pv(int x); //orisma synartisis psychology victory
+int pl(int y); //orisma synartisis psychology loss
 int main(){
     team *t;
     int N,i=0,j,s1,s2,s;
@@ -40,45 +41,66 @@ int main(){
         fscanf(file,"%s %s %d %d",t[i].name,t[i].country,t[i].D_entos,t[i].D_ektos);
         (t+i)->P=(t+i)->D_entos/10;
         (t+i)->points=0;
+        (t+i)->passive_score=0;
+        (t+i)->active_score=0;
         i++;    //gemisma pinaka domon
     }
     for(i=0;i<N;i++){
-        for(j=N-1;j>0;j--){
+        for(j=0;j>N;j++){
             if(i!=j){ 
                 if(strcmp((t+i)->country,(t+j)->country)==0){
                     s1=50+rand()%(1+((t+i)->D_entos)/2)+2*((t+i)->P);
                     s2=50+rand()%(1+((t+j)->D_entos)/2)+2*((t+j)->P);
                     if(s1>s2){
-                        if((t+i)->P==0)
-                            (t+i)->P+=2;
-                        else
-                            (t+i)->P++;
+                        (t+i)->P=pv((t+i)->P);
+                        (t+j)->P=pl((t+j)->P);
+                        (t+i)->points+=2;
+                        (t+j)->points++;
+                        (t+i)->active_score+=s1;
+                        (t+j)->passive_score+=s1;
                     }
                     else if(s1<s2){
-                        if((t+j)->P==0)
-                            (t+j)->P+=2;
-                        else
-                            (t+j)->P++;
+                        (t+j)->P=pv((t+j)->P);
+                        (t+i)->P=pl((t+i)->P);
+                        (t+j)->points+=2;
+                        (t+i)->points++;
+                        (t+j)->active_score+=s2;
+                        (t+i)->passive_score+=s2;
                     }
                     else{
                         s=rand()%2;
                         if(s==1){
-                            if((t+j)->P==0)
-                                (t+j)->P+=2;
-                            else
-                                (t+j)->P++;
+                            (t+j)->P=pv((t+j)->P);
+                            (t+i)->P=pl((t+i)->P);
                         }
                         else{
-                            if((t+i)->P==0)
-                                (t+i)->P+=2;
-                            else
-                                (t+i)->P++;
+                            (t+i)->P=pv((t+i)->P);
+                            (t+j)->P=pl((t+j)->P);
                         }
                     }
                 }
                 else{
                     s1=50+rand()%(1+((t+i)->D_entos)/2)+2*((t+i)->P);
                     s2=50+rand()%(1+((t+j)->D_ektos)/2)+2*((t+j)->P);
+                    if(s1>s2){
+                        (t+i)->P=pv((t+i)->P);
+                        (t+j)->P=pl((t+j)->P);
+                    }
+                    else if(s1<s2){
+                        (t+j)->P=pv((t+j)->P);
+                        (t+i)->P=pl((t+i)->P);
+                    }
+                    else{
+                        s=rand()%2;
+                        if(s==1){
+                            (t+j)->P=pv((t+j)->P);
+                            (t+i)->P=pl((t+i)->P);
+                        }
+                        else{
+                            (t+i)->P=pv((t+i)->P);
+                            (t+j)->P=pl((t+j)->P);
+                        }
+                    }
                 }
             }
         }
@@ -93,4 +115,19 @@ int lc(FILE* ptr){
         fscanf(ptr,"%s %s %d %d",name,country,&den,&dek);
     }
     return counter;
+}
+int pv(int x){
+    if(x==0){
+        x+=2;
+    }
+    else{
+        x++;
+    }
+    return x;
+}
+int pl(int y){
+    if(y>0){
+        y--;
+    }
+    return y;
 }
