@@ -32,22 +32,24 @@ int main(){
         return 0;
     }
     N=lc(file);//poso omadon
-    rewind(file);
-    t=(team*)malloc(sizeof(team)*N+1); //ekxorisi pinaka domon
+    fclose(file);
+    file=fopen(filename,"r");
+    t=(team*)malloc(sizeof(team)*N); //ekxorisi pinaka domon
     if(t==NULL){
         printf("Problhma stin ekxorisi pinaka");
         return 0;
     }
     srand(time(NULL)); //arxikopoiisi fitrou
-    while(i!=N){
+    while(i<N){
         fscanf(file,"%s %s %d %d",t[i].name,t[i].country,t[i].D_entos,t[i].D_ektos);
-        (t+i)->P=(t+i)->D_entos/10;
-        (t+i)->points=0;
-        (t+i)->passive_score=0;
-        (t+i)->active_score=0;
+        t[i].P=t[i].D_entos/10;
+        t[i].points=0;
+        t[i].passive_score=0;
+        t[i].active_score=0;
+        printf("%s %s %d %d",t[i].name,t[i].country,t[i].D_entos,t[i].D_ektos);
         i++;    //gemisma pinaka domon
     }
-    for(i=0;i<N;i++){
+    /*for(i=0;i<N;i++){
         for(j=0;j>N;j++){
             if(i!=j){ 
                 if(strcmp((t+i)->country,(t+j)->country)==0){
@@ -122,7 +124,7 @@ int main(){
     printf("<==================================================>");
     for(i=8;i<N;i++){
         printf("%s %d %d %d %d",(t+i)->name,(t+i)->points,(t+i)->active_score,(t+i)->passive_score,(((t+i)->active_score)-((t+i)->passive_score)));
-    }
+    }*/
     free(t);
     return 0;
 }
@@ -160,8 +162,8 @@ void score(int *z,int *w){
 void bubble_sort(team *x,int n){
     team temp;
     int i,j;
-    for(i=1;i<=n;i++){
-        for(j=n;j>i;j--){
+    for(i=0;i<=n-1;i++){
+        for(j=n-2;j>i;j--){
             if(x[j-1].points<x[j].points){
                 temp=x[j-1];
                 x[j-1]=x[j];
