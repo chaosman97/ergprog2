@@ -130,15 +130,15 @@ for(i=0;i<counter;i++){
     for(i=0;i<=counter-1;i++){
         for(j=counter-2;j>i;j--){
             if(t[j-1].points<t[j].points){
-                temp=t[j-1];
-                t[j-1]=t[j];
-                t[j]=temp;
+                memcpy(&temp,&t[j-1],sizeof(team));
+                memcpy(&t[j-1],&t[j],sizeof(team));
+                memcpy(&t[j],&temp,sizeof(team));
             }
             if(t[j-1].points==t[j].points){
                 if(((t[j-1].active_score)-(t[j-1].passive_score))<((t[j].active_score)-(t[j].passive_score))){
-                    temp=t[j-1];
-                    t[j-1]=t[j];
-                    t[j]=temp;
+                memcpy(&temp,&t[j-1],sizeof(team));
+                memcpy(&t[j-1],&t[j],sizeof(team));
+                memcpy(&t[j],&temp,sizeof(team));
                 }
             }
         }
