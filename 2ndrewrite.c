@@ -14,13 +14,14 @@ int losses;
 int passive_score;
 int active_score;
 int points;
+int ff_vict;
 }team;
 
 int main(){
 char filename[50];
 FILE *fp,*fapotel;
-team *t,temp,tmp[4];
-int counter=0,den,dek,i=0,j,sg,sf,overt=1,c=0;
+team *t,temp,ff[4];
+int counter=0,den,dek,i=0,j,h,sg,sf,overt=1,c=0;
 char country[50],name[50];
 printf("Dose onoma arxeiou: ");
 scanf("%s",filename);
@@ -57,6 +58,7 @@ while(i<counter){
     t[i].victories=0;
     t[i].passive_score=0;
     t[i].active_score=0;
+    t[i].ff_vict=0;
     //printf("%s\t%s\t%d\t%d\n",t[i].name,t[i].country,t[i].D_entos,t[i].D_ektos);
     i++;    //gemisma pinaka domon
 }
@@ -79,11 +81,11 @@ for(i=0;i<counter;i++){
         if(strcmp(t[i].country,t[j].country)==0){
             //sg : score gypedouxou ->i sf: score filoksenoumenou -> j
             sg=50+rand( )%(1+t[i].D_entos/2) + 2*t[i].P;
-            sf=50+rand( )%(1+t[i].D_entos/2) + 2*t[i].P;
+            sf=50+rand( )%(1+t[j].D_entos/2) + 2*t[j].P;
         }
         else{
             sg=50+rand( )%(1+t[i].D_entos/2) + 2*t[i].P;
-            sf=50+rand( )%(1+t[i].D_ektos/2) + 2*t[i].P;
+            sf=50+rand( )%(1+t[j].D_ektos/2) + 2*t[j].P;
         }
         if(sf==sg){
             if(rand()%2==0){
@@ -171,33 +173,29 @@ for(i=0;i<=counter-1;i++){
     fprintf(fapotel,"\nROUND 2");
     printf("round 2 results");
     for(i=0;i<4;i++,j=8-i){
+        for(h=0;h<5;h++){
         if(strcmp(t[i].country,t[j].country)==0){
             //sg : score gypedouxou ->i sf: score filoksenoumenou -> j
             sg=50+rand( )%(1+t[i].D_entos/2) + 2*t[i].P;
-            sf=50+rand( )%(1+t[i].D_entos/2) + 2*t[i].P;
+            sf=50+rand( )%(1+t[j].D_entos/2) + 2*t[j].P;
         }
         else{
             sg=50+rand( )%(1+t[i].D_entos/2) + 2*t[i].P;
-            sf=50+rand( )%(1+t[i].D_ektos/2) + 2*t[i].P;
+            sf=50+rand( )%(1+t[j].D_ektos/2) + 2*t[j].P;
         }
         if(sf==sg){
             if(rand()%2==0){
                 sg++;
-                memcpy(&tmp[c],&t[i],sizeof(team));
-                c++;
             }
             else{
                 sf++;
-                memcpy(&tmp[c],&t[j],sizeof(team));
-                c++;
             }
             overt=1;
         }
         else if(sg>sf){
             t[i].victories++;
+            t[i].ff_vict++;
             t[j].losses++;
-            memcpy(&tmp[c],&t[i],sizeof(team));
-            c++;
             if(t[i].P==10){;}
             else if(t[i].P==0){
                 t[i].P=2;
@@ -215,9 +213,8 @@ for(i=0;i<=counter-1;i++){
         }
         else{
             t[j].victories++;
+            t[j].ff_vict++;
             t[i].losses++;
-            memcpy(&tmp[c],&t[i],sizeof(team));
-            c++;
             if(t[j].P==10){;}
             else if(t[j].P==0){
                 t[j].P=2;
@@ -242,8 +239,18 @@ for(i=0;i<=counter-1;i++){
         if(overt==1){
         fprintf(fapotel,"\tOT");
         printf("\tOT");}
-        overt=0;  
+        overt=0;
+        if(t[i].ff_vict==3){
+            memcpy(&ff[c],&t[i],sizeof(team));
+            c++;
+            break;}
+        else if(t[j].ff_vict==3){
+            memcpy(&ff[c],&t[j],sizeof(team));
+            c++;
+            break;
+        } 
     }
+}
     printf("\n");
 for(i=0;i<counter;i++){
     t[i].points=(t[i].victories)*2+(t[i].losses)*1; //counting points
@@ -264,7 +271,92 @@ for(i=0;i<=counter-1;i++){
             }
         }
     }
+    //for(i=0;i<4;i++){
+    //    printf("%s\n",ff[i].name);
+    //}
+
 //end of round 2
+//start of ff
+printf("Doste xora pou tha ginei to ff: ");
+scanf("%s",country);
+for(i=0;i<2;i++,j=i+2){
+if(strcmp(ff[i].country,country)==0&&strcmp(ff[j].country,country)!=0){
+            //sg : score gypedouxou ->i sf: score filoksenoumenou -> j
+            sg=50+rand( )%(1+ff[i].D_entos/2) + 2*ff[i].P;
+            sf=50+rand( )%(1+ff[j].D_ektos/2) + 2*ff[j].P;
+        }
+        else if (strcmp(ff[j].country,country)==0&&strcmp(ff[i].country,country)!=0){
+            sg=50+rand( )%(1+ff[i].D_ektos/2) + 2*ff[i].P;
+            sf=50+rand( )%(1+ff[j].D_entos/2) + 2*ff[j].P;
+        }
+        else if(strcmp(t[i].country,country)==0&&strcmp(t[j].country,country)==0){
+          sg=50+rand( )%(1+ff[i].D_entos/2) + 2*ff[i].P;
+          sf=50+rand( )%(1+ff[j].D_entos/2) + 2*ff[j].P;
+        }
+        else{
+            sg=50+rand( )%(1+ff[i].D_ektos/2) + 2*ff[i].P;
+            sf=50+rand( )%(1+ff[j].D_ektos/2) + 2*ff[j].P;
+        }
+        if(sf==sg){
+            if(rand()%2==0){
+                sg++;
+            }
+            else{
+                sf++;
+            }
+            overt=1;
+        }
+        else if(sg>sf){
+            ff[i].victories++;
+            ff[i].ff_vict++;
+            ff[j].losses++;
+            if(ff[i].P==10){;}
+            else if(ff[i].P==0){
+                ff[i].P=2;
+            }
+            else{
+                ff[i].P++;
+            }
+            if(ff[j].P==10){
+                ff[j].P=8;
+            }
+            else if(ff[j].P==0){;}
+            else{
+                ff[j].P--;
+            }
+        }
+        else{
+            ff[j].victories++;
+            ff[j].ff_vict++;
+            ff[i].losses++;
+            if(ff[j].P==10){;}
+            else if(ff[j].P==0){
+                ff[j].P=2;
+            }
+            else{
+                ff[j].P++;
+            }
+            if(ff[i].P==10){
+                ff[i].P=8;
+            }
+            else if(ff[i].P==0){;}
+            else{
+                ff[i].P--;
+            }
+        }
+        ff[i].active_score+=sg;
+        ff[i].passive_score+=sf;
+        ff[j].active_score+=sf;
+        ff[j].passive_score+=sg;
+        fprintf(fapotel,"\n %s - %s : %d - %d",ff[i].name,ff[j].name,sg,sf);
+        printf("\n %s - %s : %d - %d",ff[i].name,ff[j].name,sg,sf);
+        if(overt==1){
+        fprintf(fapotel,"\tOT");
+        printf("\tOT");}
+        overt=0;
+}
+
+//end of ff
 fclose(fapotel);
 free(t);
 return 0;
