@@ -401,6 +401,9 @@ if(strcmp(ff[2].country,country)==0&&strcmp(ff[3].country,country)!=0){
             }
             else{
                 sf++;
+		memcpy(&temp,&ff[3],sizeof(team));
+		memcpy(&ff[3],&ff[2],sizeof(team));
+		memcpy(&ff[2],&temp,sizeof(team));
             }
             overt=1;
         }
@@ -480,6 +483,9 @@ if(strcmp(ff[0].country,country)==0&&strcmp(ff[1].country,country)!=0){
             }
             else{
                 sf++;
+		memcpy(&temp,&ff[1],sizeof(team));
+		memcpy(&ff[1],&ff[0],sizeof(team));
+		memcpy(&ff[0],&temp,sizeof(team));
             }
             overt=1;
         }
