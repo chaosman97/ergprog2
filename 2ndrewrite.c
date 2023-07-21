@@ -17,15 +17,17 @@ int points;
 int ff_vict;
 }team;
 
-int main(){
+int main(int argc,char **argv){
 char filename[50];
 FILE *fp,*fapotel;
 team *t,temp,ff[4];
 int counter=0,den,dek,i=0,j,h,sg,sf,overt=1,c=0;
 char country[50],name[50];
-printf("Dose onoma arxeiou: ");
-scanf("%s",filename);
-fp=fopen(filename,"r");
+if(argc==2 && strcmp(argv[1],"help")==0){
+	printf("%s <team file> <score file> <ff country>\n",argv[0]);
+	return 0;
+}
+fp=fopen(argv[1],"r");
 if(fp==NULL){
 printf("Problhma fopen");
 return 0;
@@ -41,7 +43,7 @@ if(t==NULL){
 	printf("problhma malloc");
 	return 0;
 }
-fp=fopen(filename,"r");
+fp=fopen(argv[1],"r");
 if(fp==NULL){
 	printf("problhma fopen");
 	return 0;
@@ -67,9 +69,7 @@ for (i=0;i<counter;i++){
     t[i].P=(t[i].D_entos+5)/10;
 }
 fclose(fp);//kleisimo arxeiou
-printf("Doste onoma arxeiou apotelesmaton: ");
-scanf("%s",filename);
-fapotel=fopen(filename,"w");
+fapotel=fopen(argv[2],"w");
 if(fapotel==NULL){
     printf("problhma fopen");
     return 0;
@@ -278,8 +278,7 @@ for(i=0;i<=counter-1;i++){
 
 //end of round 2
 //start of ff
-printf("Doste xora pou tha ginei to ff: ");
-scanf("%s",country);
+strcpy(country,argv[2]);
 fprintf(fapotel,"\nFINAL FOUR");
 for(i=0;i<2;i++){
     j=i+2;
